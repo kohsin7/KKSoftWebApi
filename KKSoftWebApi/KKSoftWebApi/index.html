@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script>
+        $.ajax({
+            url: "api/user/GetMessage",
+            type: "Get",
+            data: {
+              
+            }
+        }).done(function () {
+            console.info("done");
+        }).fail(function (error) {
+            console.info(error.responseJSON.ExceptionMessage);
+        });
+    </script>
+</body>
+</html>

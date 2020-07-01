@@ -14,9 +14,10 @@ namespace KKSoftWebApi
             // Web API 路由
             config.MapHttpAttributeRoutes();
 
+            //映射htp路由
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
+                name: "DefaultApi",//一个项目中不允许重复
+                routeTemplate: "api/{controller}/{id}",//路由模板
                 defaults: new { id = RouteParameter.Optional }
             );
         }
