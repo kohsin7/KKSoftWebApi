@@ -9,33 +9,25 @@ using System.Web.Http.Cors;
 namespace KKSoftWebApi.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
+    [RoutePrefix("api/values")]
     public class ValuesController : ApiController
     {
-        // GET api/values
-        public IEnumerable<string> Get()
+        [Route("Login")]
+        [HttpPost]
+        public bool Login(UserModel user)
         {
-            return new string[] { "value1", "value2" };
+            if (user.LoginName == "kohsin" && user.LoginPwd == "123456")
+            {
+                return true;
+            }
+            return false;
         }
 
-        // GET api/values/5
-        public string Get(int id)
+        [Route("GetUserInfo")]
+        [HttpGet]
+        public string GetUserInfo(string loginName)
         {
-            return "value";
-        }
-
-        // POST api/values
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
+            return loginName + "用户资料";
         }
     }
 }

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="Scripts/jquery-3.4.1.js"></script>
+    <script>
+      // $.ajax({
+      //   url: "http://localhost:50977/api/values",
+      //   type: "Get",
+      // }).done(function () {
+      //   console.info("done");
+      // }).fail(function (error) {
+      //   console.info("error");
+      // });
+      function btnLogin() {
+        let name = document.getElementById('LoginName').value;
+        let pwd = document.getElementById('LoginPwd').value;
+        $.ajax({
+          url: 'http://localhost:50977/api/values/Login',
+          type: 'post',
+          data: {
+            LoginName: name, //是冒号
+            LoginPwd: pwd,
+          },
+        })
+          .done(function (data) {
+            console.log(data + '123456');
+          })
+          .fail(function () {
+            console.log('error');
+          });
+      }
+    </script>
+  </head>
+
+  <body>
+    <input type="text" id="LoginName" />
+    <input type="text" id="LoginPwd" />
+    <button onclick="btnLogin()">Login</button>
+  </body>
+</html>
