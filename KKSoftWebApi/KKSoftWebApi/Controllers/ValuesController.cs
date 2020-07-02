@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KKSoftWebApi.Tools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,20 +15,25 @@ namespace KKSoftWebApi.Controllers
     {
         [Route("Login")]
         [HttpPost]
-        public bool Login(UserModel user)
+        public string Login(UserModel user)
         {
             if (user.LoginName == "kohsin" && user.LoginPwd == "123456")
             {
-                return true;
+                return JwtTools.Encode(new Dictionary<string, object>()
+                {
+                    { "UserName", user.LoginName },
+                    { "UserPwd", user.LoginPwd }
+                }, JwtTools.key);
             }
-            return false;
+            throw new Exception("账号有误");
         }
 
         [Route("GetUserInfo")]
         [HttpGet]
-        public string GetUserInfo(string loginName)
+        public string GetUserInfo()
         {
-            return loginName + "用户资料";
+            var userName = JwtTools.ValideLogined(ControllerContext.Request.Headers);
+            return "用户资料:" + userName;
         }
     }
 }

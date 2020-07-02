@@ -25,11 +25,27 @@
           },
         })
           .done(function (data) {
-            console.log(data + '123456');
+            if (data) {
+              sessionStorage.setItem('token', data);
+            }
           })
           .fail(function () {
             console.log('error');
           });
+      }
+
+      function btnGetUserInfo() {
+        $.ajax({
+          url: 'http://localhost:50977/api/values/GetUserInfo',
+          type: 'get',
+          headers: {
+            token: sessionStorage.getItem('token'),
+          },
+        })
+          .done(function (data) {
+            console.log(data);
+          })
+          .fail(function () {});
       }
     </script>
   </head>
@@ -38,5 +54,6 @@
     <input type="text" id="LoginName" />
     <input type="text" id="LoginPwd" />
     <button onclick="btnLogin()">Login</button>
+    <button onclick="btnGetUserInfo()">获取登录信息</button>
   </body>
 </html>
