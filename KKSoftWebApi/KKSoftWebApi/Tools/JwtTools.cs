@@ -2,6 +2,7 @@
 using JWT.Algorithms;
 using JWT.Exceptions;
 using JWT.Serializers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace KKSoftWebApi.Tools
     {
         public static string key = "q9w7eq8csd89fvs9ad8vyu98sfsad9fy";
 
-        public static string Encode(Dictionary<string, object> payload, string key)
+        public static string Encode(Dictionary<string, object> payload, string key = "q9w7eq8csd89fvs9ad8vyu98sfsad9fy")
         {
             IJwtAlgorithm algorithm = new HMACSHA256Algorithm();//加密算法
 
@@ -23,12 +24,14 @@ namespace KKSoftWebApi.Tools
 
             IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
 
+            payload.Add("timeout", DateTime.Now.AddHours(1));
+
             IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
 
             return encoder.Encode(payload, key);
         }
 
-        public static string Decode(string token, string key)
+        public static Dictionary<string, object> Decode(string token, string key = "q9w7eq8csd89fvs9ad8vyu98sfsad9fy")
         {
             try
             {
@@ -45,20 +48,27 @@ namespace KKSoftWebApi.Tools
                 IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
                 var json = decoder.Decode(token, key, true);
-                return json;
+
+                var result = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+                if ((DateTime)result["timeout"] < DateTime.Now)
+                {
+                    throw new Exception("jwt已经过期，请重新登录");
+                }
+                result.Remove("timeout");
+                return result;
 
             }
             catch (TokenExpiredException)
             {
-                return "Token has expired";
+                throw;
             }
             catch (SignatureVerificationException)
             {
-                return "Token has invalid signature";
+                throw;
             }
         }
 
-        public static string ValideLogined(HttpRequestHeaders headers)
+        public static Dictionary<string, object> ValideLogined(HttpRequestHeaders headers)
         {
             if (headers.GetValues("token") == null || !headers.GetValues("token").Any())
             {
